@@ -1,0 +1,32 @@
+{
+  "name": "cafeteria",
+  "version": "1.0.0",
+  "description": "Aprendiendo SASS Y GULP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrancisoRocha/cafeteria.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FrancisoRocha/cafeteria/issues"
+  },
+  "homepage": "https://github.com/FrancisoRocha/cafeteria#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "gulp": "^5.0.0",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-postcss": "^10.0.0",
+    "gulp-sass": "^5.1.0",
+    "imagemin": "^9.0.0",
+    "sass": "^1.78.0"
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%"
+  ]
+}
