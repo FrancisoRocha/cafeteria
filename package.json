@@ -28,5 +28,9 @@
   "browserslist": [
     "last 1 version",
     "> 1%"
-  ]
+  ],
+  "dependencies": {
+    "gulp-avif": "^1.1.1",
+    "gulp-webp": "^5.0.0"
+  }
 }
