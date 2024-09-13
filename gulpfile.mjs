@@ -1,5 +1,9 @@
-import gulp from 'gulp';
-const { src, dest, watch, series } = gulp;
+import path from 'path'
+import fs from 'fs'
+import { glob } from 'glob'
+
+import { src, dest, watch, series } from 'gulp'
+import sharp from 'sharp'
 
 // Dependencias de CSS - SASS.
 
@@ -9,50 +13,49 @@ import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
 const sass = gulpSass(dartSass);
 
-// Dependencias imagenes
-
-import imagemin from 'gulp-imagemin';
-import webp from 'gulp-webp';
-import avif from 'gulp-avif';
-
 // Función CSS
 export const css = (done) => {
 
     // Compilar SASS.
     // Pasos: 1.- Identificar archivo. 2.- Compilarlo. 3.- Guardarlo.
-    src('src/scss/styles.scss') // 1.
-    .pipe( sass( {outputStyle:'expanded'} ) ) // 2.
-    .pipe( postcss( [ autoprefixer() ] ) )
-    .pipe( dest('build/css') ) // 3.
+    src('src/scss/app.scss') // 1.
+        .pipe(sass({ outputStyle: 'expanded' })) // 2.
+        .pipe(postcss([autoprefixer()]))
+        .pipe(dest('build/css')) // 3.
     done();
 
 };
 
-export const imagenes = () => {
-    return  ( 
-        src('./src/img/**/*')
-        .pipe( imagemin() )
-        .pipe( dest('build/img') )
-    );
-};
+export async function imagenes(done) {
+    const srcDir = './src/img';
+    const buildDir = './build/img';
+    const images = await glob('./src/img/**/*.{jpg,png}')
 
-export const convertirWebp = () => {
+    images.forEach(file => {
+        const relativePath = path.relative(srcDir, path.dirname(file));
+        const outputSubDir = path.join(buildDir, relativePath);
+        procesarImagenes(file, outputSubDir);
+    });
+    done();
+}
 
-    const opciones = {quality : 50};
-    return src(['./src/img/**/*.png', './src/img/**/*.jpg'])
-        .pipe( webp(opciones) )
-        .pipe( dest('build/img') )
+function procesarImagenes(file, outputSubDir) {
+    if (!fs.existsSync(outputSubDir)) {
+        fs.mkdirSync(outputSubDir, { recursive: true })
+    }
+    const baseName = path.basename(file, path.extname(file))
+    const extName = path.extname(file)
+    const outputFile = path.join(outputSubDir, `${baseName}${extName}`)
+    const outputFileWebp = path.join(outputSubDir, `${baseName}.webp`)
+    const outputFileAvif = path.join(outputSubDir, `${baseName}.avif`)
 
-};
+    const options = { quality: 80 }
+    sharp(file).jpeg(options).toFile(outputFile)
+    sharp(file).webp(options).toFile(outputFileWebp)
+    sharp(file).avif().toFile(outputFileAvif)
+}
 
-export const convertirAvif = () => {
 
-    const opciones = {quality : 50, method: 'ssim'};
-    return src(['./src/img/**/*.png', './src/img/**/*.jpg'])
-        .pipe( avif(opciones) )
-        .pipe( dest('build/img') )
-
-};
 // Función dev para observar cambios
 export const dev = () => {
 
@@ -65,4 +68,4 @@ export const dev = () => {
 };
 
 // Exportaciones
-export default series(imagenes, convertirWebp, convertirAvif, css, dev);
+export default series(imagenes, css, dev);
