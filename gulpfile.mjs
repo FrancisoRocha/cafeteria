@@ -52,7 +52,7 @@ function procesarImagenes(file, outputSubDir) {
     const options = { quality: 80 }
     sharp(file).jpeg(options).toFile(outputFile)
     sharp(file).webp(options).toFile(outputFileWebp)
-    sharp(file).avif().toFile(outputFileAvif)
+    sharp(file).avif().toFile(outputFileAvif) 
 }
 
 

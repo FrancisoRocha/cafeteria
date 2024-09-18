@@ -23,3 +23,11 @@
         @content;
     }
 }
+
+// GRID
+
+@mixin grid($columna, $espacio){
+    display: grid;
+    grid-template-columns: repeat($columna, 1fr);
+    gap: $espacio;
+} 
