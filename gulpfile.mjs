@@ -11,7 +11,10 @@ import * as dartSass from 'sass'
 import gulpSass from 'gulp-sass';
 import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
+import sourcemaps from 'gulp-sourcemaps';
+import cssnano from 'cssnano';
 const sass = gulpSass(dartSass);
+
 
 // Función CSS
 export const css = (done) => {
@@ -19,8 +22,10 @@ export const css = (done) => {
     // Compilar SASS.
     // Pasos: 1.- Identificar archivo. 2.- Compilarlo. 3.- Guardarlo.
     src('src/scss/app.scss') // 1.
+        .pipe(sourcemaps.init())  
         .pipe(sass({ outputStyle: 'expanded' })) // 2.
-        .pipe(postcss([autoprefixer()]))
+        .pipe(postcss([autoprefixer(), cssnano()]))
+        .pipe(sourcemaps.write('.')) 
         .pipe(dest('build/css')) // 3.
     done();
 
